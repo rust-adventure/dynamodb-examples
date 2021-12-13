@@ -1,18 +1,28 @@
 use aws_config::meta::region::RegionProviderChain;
-use aws_sdk_dynamodb::{Client, Error, Region, error::{DescribeTableError, DescribeTableErrorKind}, model::{
-        AttributeDefinition, BillingMode, KeySchemaElement, KeyType, ScalarAttributeType,
-        TableDescription, TableStatus,
-    }, output::DescribeTableOutput};
+use aws_sdk_dynamodb::{
+    error::{DescribeTableError, DescribeTableErrorKind},
+    model::{
+        AttributeDefinition, BillingMode, KeySchemaElement,
+        KeyType, ScalarAttributeType, TableDescription,
+        TableStatus,
+    },
+    output::DescribeTableOutput,
+    Client, Error, Region,
+};
 use tokio::time;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let region_provider = RegionProviderChain::default_provider()
-        .or_else(Region::new("us-west-2"));
-    let shared_config = aws_config::from_env().region(region_provider).load().await;
+    let region_provider =
+        RegionProviderChain::default_provider()
+            .or_else(Region::new("us-west-2"));
+    let shared_config = aws_config::from_env()
+        .region(region_provider)
+        .load()
+        .await;
     let client = Client::new(&shared_config);
 
-    let key = "pk";
+    let key = "name";
     let pk = AttributeDefinition::builder()
         .attribute_name(key)
         .attribute_type(ScalarAttributeType::S)
@@ -32,12 +42,20 @@ async fn main() -> Result<(), Error> {
         .send()
         .await?;
 
-    let mut interval = time::interval(time::Duration::from_secs(2));
+    let mut interval =
+        time::interval(time::Duration::from_secs(2));
 
     loop {
-        println!("Waiting for database {} to become available", "my-table");
+        println!(
+            "Waiting for database {} to become available",
+            "my-table"
+        );
         interval.tick().await;
-        let resp = client.describe_table().table_name("my-table").send().await;
+        let resp = client
+            .describe_table()
+            .table_name("my-table")
+            .send()
+            .await;
         match resp {
             Ok(DescribeTableOutput {
                 table:

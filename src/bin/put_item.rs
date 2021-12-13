@@ -1,4 +1,6 @@
-use aws_sdk_dynamodb::{model::AttributeValue, Client, Error};
+use aws_sdk_dynamodb::{
+    model::AttributeValue, Client, Error,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -10,11 +12,15 @@ async fn main() -> Result<(), Error> {
         .table_name("my-table")
         .item(
             "name",
-            AttributeValue::S(String::from("bulbasaur".to_string())),
+            AttributeValue::S(String::from(
+                "bulbasaur".to_string(),
+            )),
         )
         .item(
             "pokemon_type",
-            AttributeValue::S(String::from("grass".to_string())),
+            AttributeValue::S(String::from(
+                "grass".to_string(),
+            )),
         );
 
     request.send().await?;

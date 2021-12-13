@@ -1,8 +1,30 @@
-use aws_sdk_dynamodb::{Client, Error};
+use aws_sdk_dynamodb::{
+    model::AttributeValue, Client, Error,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     let shared_config = aws_config::load_from_env().await;
     let client = Client::new(&shared_config);
+
+    let req = client
+        .query()
+        .table_name("my-other-table")
+        .index_name("GSI1")
+        .key_condition_expression(
+            "gsi1pk = :gsi1pk and gsi1sk > :gsi1sk",
+        )
+        .expression_attribute_values(
+            ":hashKey",
+            AttributeValue::S("123".to_string()),
+        )
+        .expression_attribute_values(
+            ":rangeKey",
+            AttributeValue::N(20150101.to_string()),
+        )
+        .send()
+        .await?;
+    dbg!(req.items);
+
     Ok(())
 }
