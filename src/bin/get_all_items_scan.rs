@@ -11,7 +11,8 @@ async fn main() -> Result<(), Error> {
         client.scan().table_name("my-table").send().await?;
     // let resp = client
     //     .scan()
-    //     .filter_expression("lengthInSeconds < :seconds")
+    //     .filter_expression("lengthInSeconds <
+    // :seconds")
     //     .expression_attribute_values(
     //         ":seconds",
     //         AttributeValue::N(100.to_string()),
