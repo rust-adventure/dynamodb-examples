@@ -1,6 +1,4 @@
-use aws_sdk_dynamodb::{
-    model::AttributeValue, Client, Error,
-};
+use aws_sdk_dynamodb::{Client, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
